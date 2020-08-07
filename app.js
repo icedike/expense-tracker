@@ -7,14 +7,11 @@ require('./config/mongoose')
 const app = express()
 const port = 3000
 
-app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: require('./config/handlebars-helpers') }))
 app.set('view engine', 'hbs')
 
 app.use(express.static('public'))
 app.use(routes)
-app.get('/', (req, res) => {
-  res.render('index')
-})
 
 app.listen(port, () => {
   console.log('Running Server')
