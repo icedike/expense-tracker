@@ -36,8 +36,10 @@
           </div>
         </li>
         <div class="col-2">
-          <a href="">修改</a>
-          <a href="">刪除</a>
+          <a href="/records/{{this._id}}/edit">修改</a>
+          <form action="/records/{{this._id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button class="inlineBtn" type="submit">刪除</button>
+          </form>
         </div>
       </div>
       {{/each}}

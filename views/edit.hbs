@@ -1,17 +1,17 @@
-<h1 class="mb-5">請輸入你的支出</h1>
+<h1 class="mb-5">請修改你的支出</h1>
 <div class="container mt-5 ">
-  <form action="/records" method="POST">
+  <form action="/records/{{record._id}}?_method=PUT" method="POST">
     <div class="form-group row">
       <label for="name" class="col-sm-2 col-form-label">名稱：</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="name" name="name" required="required">
+        <input type="text" class="form-control" id="name" name="name" required="required" value="{{record.name}}">
       </div>
     </div>
 
     <div class="form-group row">
       <label for="date" class="col-sm-2 col-form-label">日期：</label>
       <div class="col-sm-10">
-        <input type="date" class="form-control" id="date" name="date" required="required">
+        <input type="date" class="form-control" id="date" name="date" required="required" value="{{record.date}}">
       </div>
     </div>
 
@@ -21,7 +21,7 @@
         <select class="form-control" id="category" name="category" required="required">
           <option value="">Select</option>
           {{#each categories}}
-          <option value="{{this.categoryName}}">{{this.categoryName}}</option>
+          <option value="{{this.categoryName}}" {{#if this.selected}}selected{{/if}}>{{this.categoryName}}</option>
           {{/each}}
         </select>
       </div>
@@ -30,12 +30,13 @@
     <div class="form-group row">
       <label for="amount" class="col-sm-2 col-form-label">金額：</label>
       <div class="col-sm-10">
-        <input type="number" class="form-control" id="amount" name="amount" required="required">
+        <input type="number" class="form-control" id="amount" name="amount" required="required"
+          value="{{record.amount}}">
       </div>
     </div>
 
     <div class="row">
-      <button type="submit" class="btn btn-primary mb-2">新增支出</button>
+      <button type="submit" class="btn btn-primary mb-2">修改支出</button>
     </div>
   </form>
 </div>

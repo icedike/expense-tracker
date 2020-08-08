@@ -15,10 +15,12 @@ router.get('/', (req, res) => {
         .populate('category')
         .lean()
         .then(records => {
-          for (let i = 0; i < records.length; i++) {
-            records[i].date = records[i].date.replace(/-/g, '/')
-          }
-          return res.render('index', { categories, records, totalAmount })
+          const slashRecords = []
+          records.forEach(function (record) {
+            record.date = record.date.replace(/-/g, '/')
+            slashRecords.push(record)
+          })
+          return res.render('index', { categories, records: slashRecords, totalAmount })
         })
         .catch(error => console.log(error))
     })
