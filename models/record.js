@@ -4,7 +4,6 @@ const Schema = mongoose.Schema
 const categorySchema = new Schema({
   categoryName: String,
   icon: String,
-  // records: [{ type: Schema.Types.ObjectId, ref: 'Record' }],
   totalAmount: {
     type: Number,
     default: 0
