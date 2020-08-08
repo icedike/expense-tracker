@@ -7,7 +7,7 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         {{#each categories}}
-        <a class="dropdown-item" href="#">{{this.categoryName}}</a>
+        <a class="dropdown-item" href="/sort?sort_id={{this._id}}">{{this.categoryName}}</a>
         {{/each}}
       </div>
     </div>
