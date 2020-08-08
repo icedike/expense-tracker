@@ -56,11 +56,9 @@ router.put('/:record_id', (req, res) => {
         .then(() => {
           return Record.findById(id)
             .then(record => {
-              console.log('new category', category)
               return Category.findById(record.category)
                 .then(oldCategory => {
                   oldCategory.totalAmount -= record.amount
-                  console.log('old category', oldCategory)
                   return oldCategory.save()
                 })
                 .then(() => {
@@ -76,4 +74,21 @@ router.put('/:record_id', (req, res) => {
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
+
+router.delete('/:record_id', (req, res) => {
+  const id = req.params.record_id
+  Record.findById(id)
+    .then(record => {
+      return Category.findById(record.category)
+        .then(category => {
+          category.totalAmount -= record.amount
+          return category.save()
+        })
+        .then(() => record.remove())
+        .catch(error => console.log(error))
+    })
+    .then(() => res.redirect('/'))
+    .catch()
+})
+
 module.exports = router
