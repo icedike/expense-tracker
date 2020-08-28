@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.log(error)
   }
+
   try {
     const records = await Record.find().lean()
     records.forEach(function (record) {

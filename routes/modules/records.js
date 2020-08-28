@@ -17,78 +17,74 @@ router.post('/', (req, res) => {
       newRecord.category = category._id
       category.totalAmount += Number(newRecord.amount)
       category.save()
-      return Record.create(newRecord)
-        .then(() => res.redirect('/'))
-        .catch(error => console.log(error))
+      return newRecord
     })
+    .then(newRecord => Record.create(newRecord))
+    .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
 
-router.get('/:record_id/edit', (req, res) => {
+router.get('/:record_id/edit', async (req, res) => {
   const id = req.params.record_id
-  Category.find()
-    .lean()
-    .then(categories => {
-      return Record.findById(id)
-        .populate('category')
-        .lean()
-        .then(record => {
-          categories.forEach(function (category, index) {
-            if (category.categoryName === record.category.categoryName) {
-              categories[index].selected = true
-            }
-          })
-          return res.render('edit', { categories, record })
-        })
-        .catch(error => console.log(error))
+  let categories = []
+  try {
+    categories = await Category.find().lean()
+  } catch (error) {
+    console.log(error)
+  }
+
+  try {
+    const record = await Record.findById(id).populate('category').lean()
+    categories.forEach(function (category, index) {
+      if (category.categoryName === record.category.categoryName) {
+        categories[index].selected = true
+      }
     })
-    .catch(error => console.log(error))
+    res.render('edit', { categories, record })
+  } catch (error) {
+    console.log(error)
+  }
 })
 
-router.put('/:record_id', (req, res) => {
+router.put('/:record_id', async (req, res) => {
   const id = req.params.record_id
   const editRecord = req.body
-  Category.findOne({ categoryName: editRecord.category })
-    .then(category => {
-      editRecord.category = category._id
-      category.totalAmount += Number(editRecord.amount)
-      return category.save()
-        .then(() => {
-          return Record.findById(id)
-            .then(record => {
-              return Category.findById(record.category)
-                .then(oldCategory => {
-                  oldCategory.totalAmount -= record.amount
-                  return oldCategory.save()
-                })
-                .then(() => {
-                  record = Object.assign(record, editRecord)
-                  return record.save()
-                })
-                .catch(error => console.log(error))
-            })
-            .catch(error => console.log(error))
-        })
-        .catch(error => console.log(error))
-    })
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
+
+  try {
+    const category = await Category.findOne({ categoryName: editRecord.category })
+    editRecord.category = category._id
+    category.totalAmount += Number(editRecord.amount)
+    await category.save()
+  } catch (error) {
+    console.log(error)
+  }
+
+  try {
+    let record = await Record.findById(id)
+    const oldCategory = await Category.findById(record.category)
+    oldCategory.totalAmount -= record.amount
+    await oldCategory.save()
+    record = Object.assign(record, editRecord)
+    await record.save()
+    res.redirect('/')
+  } catch (error) {
+    console.log(error)
+  }
 })
 
-router.delete('/:record_id', (req, res) => {
+router.delete('/:record_id', async (req, res) => {
   const id = req.params.record_id
-  Record.findById(id)
-    .then(record => {
-      return Category.findById(record.category)
-        .then(category => {
-          category.totalAmount -= record.amount
-          return category.save()
-        })
-        .then(() => record.remove())
-        .catch(error => console.log(error))
-    })
-    .then(() => res.redirect('/'))
-    .catch()
+
+  try {
+    const record = await Record.findById(id)
+    const category = await Category.findById(record.category)
+    category.totalAmount -= record.amount
+    await category.save()
+    await record.remove()
+    res.redirect('/')
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 module.exports = router
