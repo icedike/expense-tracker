@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     categories.forEach(function (category) {
       totalAmount += category.totalAmount
     })
-    const records = await Record.find().populate('category').lean()
+    const records = await Record.find().populate('category').sort({ date: 'desc' }).lean()
     const slashRecords = []
     records.forEach(function (record) {
       record.date = record.date.replace(/-/g, '/')
