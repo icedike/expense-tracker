@@ -13,7 +13,7 @@ const categorySchema = new Schema({
 const recordSchema = new Schema({
   name: String,
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
-  date: String,
+  date: Date,
   amount: Number,
   merchant: String
 })
