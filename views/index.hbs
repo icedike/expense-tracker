@@ -1,15 +1,26 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="dropdown col-8">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false" style="width: 100%;">
-        類別
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        {{#each categories}}
-        <a class="dropdown-item" href="/sort?sort_id={{this._id}}">{{this.categoryName}}</a>
-        {{/each}}
-      </div>
+      <form action="/sort" method="GET" class="row">
+        <div class="date-select mr-3">
+          <select class="form-control" style="cursor: pointer" name="month" onchange="this.form.submit()">
+            <option value="" selected>All Month</option>
+            {{#each availableMonth}}
+            <option value="{{this.month}}" {{#if this.isSelected}} selected{{/if}}>
+              {{this.month}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="category-select">
+          <select class="form-control" style="cursor: pointer" name="category" onchange="this.form.submit()">
+            <option value="" selected>All</option>
+            {{#each categories}}
+            <option value="{{this._id}}" {{#if this.isSelected}} selected{{/if}}>
+              {{this.categoryName}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </form>
     </div>
   </div>
   <div class="row justify-content-center mt-5">
