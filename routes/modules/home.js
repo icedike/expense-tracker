@@ -1,19 +1,8 @@
 const express = require('express')
+const { formatDate } = require('../../config/dateUtil')
 
 const { Category, Record } = require('../../models/record')
 const router = express.Router()
-
-function formatDate(date) {
-  const d = new Date(date)
-  let month = '' + (d.getMonth() + 1)
-  let day = '' + d.getDate()
-  const year = d.getFullYear()
-
-  if (month.length < 2) month = '0' + month
-  if (day.length < 2) day = '0' + day
-
-  return [year, month, day].join('/')
-}
 
 router.get('/', async (req, res) => {
   try {
@@ -25,7 +14,7 @@ router.get('/', async (req, res) => {
     const records = await Record.find().populate('category').sort({ date: 'desc' }).lean()
     const slashRecords = []
     records.forEach(function (record) {
-      record.date = formatDate(record.date)
+      record.date = formatDate(record.date, true)
       slashRecords.push(record)
     })
     res.render('index', { categories, records: slashRecords, totalAmount })
@@ -41,7 +30,7 @@ router.get('/sort', async (req, res) => {
     const records = await Record.find({ category: categoryId }).populate('category').lean()
     const slashRecords = []
     records.forEach(function (record) {
-      record.date = formatDate(record.date)
+      record.date = formatDate(record.date, true)
       slashRecords.push(record)
     })
     const totalAmount = records.length > 0 ? records[0].category.totalAmount : 0
