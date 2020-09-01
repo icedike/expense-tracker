@@ -5,7 +5,6 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const session = require('express-session')
 const usePassport = require('./config/passport')
-const { use } = require('passport')
 require('./config/mongoose')
 
 const app = express()
