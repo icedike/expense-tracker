@@ -50,7 +50,6 @@ router.get('/sort', async (req, res) => {
         $lookup: { as: 'category', from: 'categories', localField: 'category', foreignField: '_id' }
       }
     ]).unwind('category')
-    console.log('records', records)
     const slashRecords = []
     records.forEach(function (record) {
       record.date = formatDate(record.date, true)
