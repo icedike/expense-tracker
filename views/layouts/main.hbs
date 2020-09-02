@@ -19,8 +19,13 @@
   <header>
     <nav class="navbar navbar-light" style="background-color: #f1f1f1;">
       <a class="navbar-brand" href="/">
-        <h4>家庭記帳本</h4>
+        <h4>{{#if isAuthenticated}}{{user.name}}'s {{/if}}家庭記帳本</h4>
       </a>
+      {{#if isAuthenticated}}
+      <a href="/users/logout" class="btn btn-outline-dark">Logout</a>
+      {{else}}
+      <a href="/users/login" class="btn btn-outline-dark">Login</a>
+      {{/if}}
     </nav>
   </header>
 
