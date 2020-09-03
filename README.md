@@ -56,7 +56,8 @@ npm run start
 * 請至 <http://localhost:3000> 開始使用
 
 * 測試帳號：
-| Account          | Password |
-| ---------------- | -------- |
-| root@example.com | 12345678 |
+
+ | Account          | Password |
+ | ---------------- | -------- |
+ | root@example.com | 12345678 |
 
