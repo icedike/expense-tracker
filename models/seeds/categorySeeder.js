@@ -28,5 +28,4 @@ db.once('open', () => {
     .then(() => db.close())
     .catch(error => console.log(error))
   console.log('Category Done!!')
-  // db.close()
 })
