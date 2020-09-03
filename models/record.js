@@ -3,11 +3,7 @@ const Schema = mongoose.Schema
 
 const categorySchema = new Schema({
   categoryName: String,
-  icon: String,
-  totalAmount: {
-    type: Number,
-    default: 0
-  }
+  icon: String
 })
 
 const recordSchema = new Schema({
@@ -15,7 +11,13 @@ const recordSchema = new Schema({
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
   date: Date,
   amount: Number,
-  merchant: String
+  merchant: String,
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    index: true,
+    require: true
+  }
 })
 
 module.exports = {

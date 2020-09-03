@@ -7,18 +7,18 @@ const { Category, Record } = require('../../models/record')
 const router = express.Router()
 
 router.get('/', async (req, res) => {
+  const userId = req.user._id
   try {
     const categories = await Category.find().lean()
     let totalAmount = 0
     let availableMonth = []
-    categories.forEach(function (category) {
-      totalAmount += category.totalAmount
-    })
-    const records = await Record.find().populate('category').sort({ date: 'desc' }).lean()
+
+    const records = await Record.find({ userId }).populate('category').sort({ date: 'desc' }).lean()
     const slashRecords = []
     records.forEach(function (record) {
       record.date = formatDate(record.date, true)
       const recordMonth = formatDate(record.date, false)
+      totalAmount += record.amount
       if (availableMonth.indexOf(recordMonth) === -1) availableMonth.push(recordMonth)
       slashRecords.push(record)
     })
@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/sort', async (req, res) => {
+  const userId = req.user._id
   const { category, month } = req.query
   const condition = {}
   let availableMonth = []
@@ -40,6 +41,7 @@ router.get('/sort', async (req, res) => {
     condition.year = Number(yyyymm[0])
     condition.month = Number(yyyymm[1])
   }
+  condition.userId = userId
   try {
     const categories = await Category.find().lean()
     const records = await Record.aggregate([
@@ -56,7 +58,7 @@ router.get('/sort', async (req, res) => {
       totalAmount += record.amount
       slashRecords.push(record)
     })
-    const allRecords = await Record.find().sort({ date: 'desc' })
+    const allRecords = await Record.find({ userId }).sort({ date: 'desc' })
     allRecords.forEach(function (record) {
       const recordMonth = formatDate(record.date, false)
       if (availableMonth.indexOf(recordMonth) === -1) availableMonth.push(recordMonth)
