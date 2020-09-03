@@ -1,5 +1,7 @@
 const { Category, Record } = require('../record')
+const User = require('../user')
 const db = require('../../config/mongoose')
+const bcrypt = require('bcryptjs')
 
 const data = [
   {
@@ -34,16 +36,27 @@ const data = [
   }
 ]
 
-db.once('open', () => {
-  data.forEach(dataItem => {
-    Category.findOne({ categoryName: dataItem.category })
-      .then(category => {
-        dataItem.category = category._id
-        category.totalAmount += dataItem.amount
-        Record.create(dataItem)
-        category.save()
-      })
-      .catch(error => console.log(error))
+const SEED_USER = {
+  name: 'root',
+  email: 'root@example.com',
+  password: '12345678'
+}
+
+db.once('open', async () => {
+  const hash = await bcrypt.genSalt(10).then(salt => bcrypt.hash(SEED_USER.password, salt))
+  const user = await User.create({
+    name: SEED_USER.name,
+    email: SEED_USER.email,
+    password: hash
   })
+
+  for (const dataItem of data) {
+    const category = await Category.findOne({ categoryName: dataItem.category })
+    dataItem.category = category._id
+    dataItem.userId = user._id
+    await Record.create(dataItem)
+  }
+
   console.log('Record Done!!')
+  process.exit()
 })
